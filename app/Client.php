@@ -15,6 +15,8 @@ class Client extends Model
     	'tanggalPengiriman',
     	'terbayar',
     	'order',
+        'hargaTotal',
+        'barangTotal',
     	'lunas',
-    ]
+    ];
 }

@@ -15,6 +15,9 @@ class Supplier extends Model
     	'tanggalPengiriman',
     	'terbayar',
     	'order',
+        'hargaTotal',
+        'barangTotal',
+        'keteranganBon',
     	'lunas',
-    ]
+    ];
 }

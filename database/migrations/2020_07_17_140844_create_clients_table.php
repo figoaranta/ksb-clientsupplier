@@ -23,6 +23,8 @@ class CreateClientsTable extends Migration
             $table->string('tanggalPengiriman')->nullable();
             $table->string('terbayar')->nullable();
             $table->string('order');
+            $table->integer('hargaTotal');
+            $table->integer('barangTotal');
             $table->boolean('lunas')->default(false);
             $table->timestamps();
         });

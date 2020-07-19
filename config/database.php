@@ -72,6 +72,15 @@ return [
             'password' => env('DB_PASSWORD_SECOND'),
         ],
 
+        'mysql3' => [
+            'driver' => env('DB_CONNECTION_THIRD'),
+            'host' => env('DB_HOST_THIRD'),
+            'port' => env('DB_PORT_THIRD'),
+            'database' => env('DB_DATABASE_THIRD'),
+            'username' => env('DB_USERNAME_THIRD'),
+            'password' => env('DB_PASSWORD_THIRD'),
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),

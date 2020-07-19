@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Supplier;
+use App\Stock;
 use Illuminate\Http\Request;
 use DB;
 
@@ -13,6 +14,7 @@ class SupplierController extends Controller
     }
     public function show(Supplier $supplier)
     {
+        $supplier->order = json_decode($supplier->order,true);
     	return $supplier;
     }
     public function store(Request $request)
@@ -22,14 +24,47 @@ class SupplierController extends Controller
 	    	'penjual' => 'required',
 	    	'pembeli'=> 'required',
 	    	'alamatPenerima'=> 'required',
+            'keteranganBon' => 'required',
 	    	// 'tanggalBayar'=> 'required',
 	    	// 'tanggalPengiriman'=> 'required',
 	    	// 'terbayar'=> 'required',
-	    	'order'=> 'required',
+	    	// 'order'=> 'required',
 	    	// 'lunas'=> 'required',
     	]);
 
-    	$supplier = Supplier::create($request->all());
+        $clientsupplier = DB::connection('mysql2')->table('clients_suppliers')->where('name',$request->penjual)->get();
+
+        $output = DB::table('carts')->where('id', $clientsupplier[0]->id);
+
+        $cart = DB::table('carts')->where('id', $clientsupplier[0]->id)->first();
+        
+        $hutang = DB::connection('mysql3')->table('hutangs')->where('penjual',$clientsupplier[0]->name)->get();
+
+        if($hutang->count() != 0){
+            DB::connection('mysql3')->table('hutangs')->where('penjual',$clientsupplier[0]->name)->update([
+                'total' => $hutang[0]->total + $cart->totalPrice
+            ]);
+        }
+        else if ($cart->totalPrice!=0){
+            $hutang = DB::connection('mysql3')->table('hutangs')->insert([
+                'penjual' => $request->penjual,
+                "alamat" => $request->alamatPenerima,
+                "total" => $cart->totalPrice,
+            ]);
+        }
+
+        $supplier = Supplier::create([
+            'nomorBon' => $request->nomorBon,
+            'penjual' => $request->penjual,
+            'pembeli' => $request->pembeli,
+            'alamatPenerima' => $request->alamatPenerima,
+            'keteranganBon' =>$request->keteranganBon,
+            'order' => $cart->items,
+            'barangTotal'=> $cart->totalQuantity,
+            'hargaTotal' => $cart->totalPrice
+        ]);
+
+        $output->delete();
     	return $supplier;
     }
     public function update(Request $request, Supplier $supplier)
@@ -39,6 +74,29 @@ class SupplierController extends Controller
     }
     public function destroy(Supplier $supplier)
     {
+        $items = json_decode($supplier->order,true);
+        foreach ($items as $key => $value) {
+            $wheel = DB::connection('mysql2')->table('wheels')->where('id',$key)->get();
+
+            $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+
+            Stock::where('uniqueCode',$wheel[0]->uniqueCode)->update([
+                'quantity' => $stock[0]->quantity-$value['quantity']
+            ]);
+        }
+
+        $hutang  = DB::connection('mysql3')->table('hutangs')->where('penjual',$supplier->penjual)->get();
+        if($hutang->count()!=0){
+            if($hutang[0]->total - $supplier->hargaTotal == 0){
+                DB::connection('mysql3')->table('hutangs')->where('penjual',$supplier->penjual)->delete();
+            }
+            else{
+                DB::connection('mysql3')->table('hutangs')->where('penjual',$supplier->penjual)->update([
+                    'total' => $hutang[0]->total - $supplier->hargaTotal
+                ]);
+            }
+        }
+
     	$supplier->delete();
     	return response()->json(["Data has been deleted."]);
     }
