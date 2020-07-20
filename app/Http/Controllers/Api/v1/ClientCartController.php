@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\v1;
+use App\Http\Controllers;
 use App\Cart;
 use App\Stock;
 use Illuminate\Http\Request;
 use DB;
-
-class SupplierPinjamanCartController extends Controller
-{
+class ClientCartController extends Controller
+{   
     public function addToCart(Request $request,$wheelId,$name)
     {
         $wheel = DB::connection('mysql2')->table('wheels')->where('id',$wheelId)->get();
@@ -16,13 +16,28 @@ class SupplierPinjamanCartController extends Controller
         $request->validate([
             'quantity' => 'required',
             'price' => 'required',
-        ]);    
+            'keteranganGudang' => 'required'
+        ]);
+
+        if($request->keteranganGudang == 'Gudang'){
+            $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+
+            if($request->quantity > $stock[0]->quantity){
+                return response()->json(["Insufficient Stock"]);
+            }
+            else{
+                $stock[0]->update([
+                    "quantity" => $stock[0]->quantity - $request->quantity
+                ]);
+            } 
+        }
+        
 
         $productArray = ([
             "id"=>$wheel[0]->id,
             "uniqueCode"=>$wheel[0]->uniqueCode, 
-            "keteranganGudang"=>null,
-            "price"=>null,
+            "keteranganGudang"=>$request->keteranganGudang,
+            "price"=>$request->price,
             "quantity"=>$request->quantity
         ]);
         
@@ -93,7 +108,14 @@ class SupplierPinjamanCartController extends Controller
         $cart = DB::table('carts')->where('id', $clientsupplier[0]->id)->first();
         $output = DB::table('carts')->where('id', $clientsupplier[0]->id);
 
+        if(json_decode($cart->items,true)[$wheelId]['keteranganGudang'] != "Pinjam"){
+            $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
 
+            $stock[0]->update([
+                'quantity' => $stock[0]->quantity + 1
+            ]);
+        }
+        
         if ($cart) {
             $oldCart = $cart;
             $oldCart->items = json_decode($oldCart->items,true);
@@ -157,8 +179,15 @@ class SupplierPinjamanCartController extends Controller
         else{
             $oldCart = null;
         }
-        
 
+        if($oldCart->items[$wheelId]['keteranganGudang'] != "Pinjam"){
+            $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+
+            $stock[0]->update([
+                'quantity' => $stock[0]->quantity + $oldCart->items[$wheelId]['quantity']
+            ]);
+        }
+        
         $oldCart->totalPrice = $oldCart->totalPrice - $oldCart->items[$wheelId]['price'];
         $oldCart->totalQuantity = $oldCart->totalQuantity - $oldCart->items[$wheelId]['quantity'];
         unset($oldCart->items[$wheelId]);
