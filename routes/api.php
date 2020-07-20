@@ -17,21 +17,21 @@ use Illuminate\Support\Facades\Route;
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-Route::apiResource('stocks','StockController');
-Route::apiResource('clients','ClientController');
-Route::apiResource('suppliers','SupplierController');
+Route::apiResource('stocks','Api\v1\StockController');
+Route::apiResource('clients','Api\v1\ClientController');
+Route::apiResource('suppliers','Api\v1\SupplierController');
 
-Route::get('clientCart/{name}','ClientCartController@viewCart');
-Route::post('clientCart/{wheelId}/{name}','ClientCartController@addToCart');
-Route::delete('clientCart/{wheelId}/{name}','ClientCartController@deleteCartItem');
-Route::delete('clientCart/{wheelId}/{name}','ClientCartController@deleteCartItemAll');
+Route::get('clientCart/{name}','Api\v1\ClientCartController@viewCart');
+Route::post('clientCart/{wheelId}/{name}','Api\v1\ClientCartController@addToCart');
+Route::delete('clientCart/{wheelId}/{name}','Api\v1\ClientCartController@deleteCartItem');
+Route::delete('clientCart/{wheelId}/{name}','Api\v1\ClientCartController@deleteCartItemAll');
 
-// Route::get('supplierCart/{name}','SupplierCartController@viewCart');
-// Route::post('supplierCart/{wheelId}/{name}','SupplierCartController@addToCart');
-// Route::delete('supplierCart/{wheelId}/{name}','SupplierCartController@deleteCartItem');
-// Route::delete('supplierCart/{wheelId}/{name}','SupplierCartController@deleteCartItemAll');
+Route::get('supplierCart/{name}','Api\v1\SupplierCartController@viewCart');
+Route::post('supplierCart/{wheelId}/{name}','Api\v1\SupplierCartController@addToCart');
+Route::delete('supplierCart/{wheelId}/{name}','Api\v1\SupplierCartController@deleteCartItem');
+Route::delete('supplierCart/{wheelId}/{name}','Api\v1\SupplierCartController@deleteCartItemAll');
 
-Route::get('supplierCart/{name}','SupplierPinjamanCartController@viewCart');
-Route::post('supplierCart/{wheelId}/{name}','SupplierPinjamanCartController@addToCart');
-Route::delete('supplierCart/{wheelId}/{name}','SupplierPinjamanCartController@deleteCartItem');
-Route::delete('supplierCartAll/{wheelId}/{name}','SupplierPinjamanCartController@deleteCartItemAll');
+Route::get('supplierPinjamCart/{name}','Api\v1\SupplierPinjamanCartController@viewCart');
+Route::post('supplierPinjamCart/{wheelId}/{name}','Api\v1\SupplierPinjamanCartController@addToCart');
+Route::delete('supplierPinjamCart/{wheelId}/{name}','Api\v1\SupplierPinjamanCartController@deleteCartItem');
+Route::delete('supplierPinjamCartAll/{wheelId}/{name}','Api\v1\SupplierPinjamanCartController@deleteCartItemAll');
