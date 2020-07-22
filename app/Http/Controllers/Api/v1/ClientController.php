@@ -62,7 +62,8 @@ class ClientController extends Controller
             'alamatPenerima' => $request->alamatPenerima,
             'order' => $cart->items,
             'barangTotal'=> $cart->totalQuantity,
-            'hargaTotal' => $cart->totalPrice
+            'hargaTotal' => $cart->totalPrice,
+            'keteranganBon'=> $request->keteranganBon
         ]);
 
         $output->delete();
