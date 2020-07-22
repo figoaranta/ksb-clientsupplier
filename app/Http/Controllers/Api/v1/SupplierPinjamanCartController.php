@@ -16,13 +16,27 @@ class SupplierPinjamanCartController extends Controller
 
         $request->validate([
             'quantity' => 'required',
-            'price' => 'required',
-        ]);    
+            'keterangan' => 'required',
+        ]); 
+
+        $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+
+        if($stock){
+            $stock[0]->update([
+                'quantity' => $stock[0]->quantity + $request->quantity
+            ]);
+        }
+        else{
+            Stock::create([
+                'uniqueCode'=> $wheel[0]->uniqueCode,
+                'quantity' => $request->quantity
+            ]);
+        }
 
         $productArray = ([
             "id"=>$wheel[0]->id,
             "uniqueCode"=>$wheel[0]->uniqueCode, 
-            "keteranganGudang"=>null,
+            "keterangan"=>$request->keterangan,
             "price"=>null,
             "quantity"=>$request->quantity
         ]);
@@ -103,6 +117,11 @@ class SupplierPinjamanCartController extends Controller
             $oldCart = null;
         }
 
+        $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+        $stock[0]->update([
+            'quantity' => $stock[0]->quantity-1
+        ]);
+
         if($oldCart->totalQuantity == 1){
             $output->delete();
             return response()->json([]);            
@@ -159,6 +178,10 @@ class SupplierPinjamanCartController extends Controller
             $oldCart = null;
         }
         
+        $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+        $stock[0]->update([
+            'quantity' => $stock[0]->quantity-$oldCart->items[$wheelId]['quantity']
+        ]);
 
         $oldCart->totalPrice = $oldCart->totalPrice - $oldCart->items[$wheelId]['price'];
         $oldCart->totalQuantity = $oldCart->totalQuantity - $oldCart->items[$wheelId]['quantity'];

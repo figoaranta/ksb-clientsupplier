@@ -25,6 +25,7 @@ class CreateClientsTable extends Migration
             $table->string('order');
             $table->integer('hargaTotal');
             $table->integer('barangTotal');
+            $table->string('keteranganBon')->nullable();
             $table->boolean('lunas')->default(false);
             $table->timestamps();
         });

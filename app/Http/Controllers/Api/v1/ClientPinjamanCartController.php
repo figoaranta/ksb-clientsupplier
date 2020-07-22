@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Cart;
 use App\Stock;
-use Illuminate\Http\Request;
 use DB;
-class SupplierCartController extends Controller
-{   
+
+class ClientPinjamanCartController extends Controller
+{
     public function addToCart(Request $request,$wheelId,$name)
     {
         $wheel = DB::connection('mysql2')->table('wheels')->where('id',$wheelId)->get();
@@ -15,28 +16,39 @@ class SupplierCartController extends Controller
 
         $request->validate([
             'quantity' => 'required',
-            'price' => 'required',
-            'keterangan'=>'required',
-        ]);    
+            // 'price' => 'required',
+            'keterangan' => 'required'
+        ]);
 
         $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
 
-        if($stock){
-        	$stock[0]->update([
-        		'quantity' => $stock[0]->quantity + $request->quantity
-        	]);
+        if($request->quantity > $stock[0]->quantity){
+            return response()->json(["Insufficient Stock"]);
         }
         else{
-        	Stock::create([
-        		'uniqueCode'=> $wheel[0]->uniqueCode,
-        		'quantity' => $request->quantity
-        	]);
-        }
+            $stock[0]->update([
+                "quantity" => $stock[0]->quantity - $request->quantity
+            ]);
+        } 
+        // if($request->keteranganGudang == 'Gudang'){
+        //     $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+
+        //     if($request->quantity > $stock[0]->quantity){
+        //         return response()->json(["Insufficient Stock"]);
+        //     }
+        //     else{
+        //         $stock[0]->update([
+        //             "quantity" => $stock[0]->quantity - $request->quantity
+        //         ]);
+        //     } 
+        // }
+        
+
         $productArray = ([
             "id"=>$wheel[0]->id,
             "uniqueCode"=>$wheel[0]->uniqueCode, 
             "keterangan"=>$request->keterangan,
-            "price"=>$request->price,
+            "price"=>null,
             "quantity"=>$request->quantity
         ]);
         
@@ -107,7 +119,19 @@ class SupplierCartController extends Controller
         $cart = DB::table('carts')->where('id', $clientsupplier[0]->id)->first();
         $output = DB::table('carts')->where('id', $clientsupplier[0]->id);
 
+        $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
 
+        $stock[0]->update([
+            'quantity' => $stock[0]->quantity + 1
+        ]);
+        // if(json_decode($cart->items,true)[$wheelId]['keteranganGudang'] != "Pinjam"){
+        //     $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+
+        //     $stock[0]->update([
+        //         'quantity' => $stock[0]->quantity + 1
+        //     ]);
+        // }
+        
         if ($cart) {
             $oldCart = $cart;
             $oldCart->items = json_decode($oldCart->items,true);
@@ -115,11 +139,6 @@ class SupplierCartController extends Controller
         else{
             $oldCart = null;
         }
-
-        $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
-        $stock[0]->update([
-        	'quantity' => $stock[0]->quantity-1
-        ]);
 
         if($oldCart->totalQuantity == 1){
             $output->delete();
@@ -176,12 +195,20 @@ class SupplierCartController extends Controller
         else{
             $oldCart = null;
         }
-        
-        $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
-        $stock[0]->update([
-        	'quantity' => $stock[0]->quantity-$oldCart->items[$wheelId]['quantity']
-        ]);
 
+        $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+
+        $stock[0]->update([
+            'quantity' => $stock[0]->quantity + $oldCart->items[$wheelId]['quantity']
+        ]);
+        // if($oldCart->items[$wheelId]['keteranganGudang'] != "Pinjam"){
+        //     $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+
+        //     $stock[0]->update([
+        //         'quantity' => $stock[0]->quantity + $oldCart->items[$wheelId]['quantity']
+        //     ]);
+        // }
+        
         $oldCart->totalPrice = $oldCart->totalPrice - $oldCart->items[$wheelId]['price'];
         $oldCart->totalQuantity = $oldCart->totalQuantity - $oldCart->items[$wheelId]['quantity'];
         unset($oldCart->items[$wheelId]);

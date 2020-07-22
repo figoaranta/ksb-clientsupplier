@@ -27,6 +27,7 @@ class ClientController extends Controller
 	    	'pembeli' => 'required',
 	    	'penerima'=> 'required',
 	    	'alamatPenerima'=> 'required',
+            'keteranganBon' => 'required',
 	    	// 'tanggalBayar'=> 'required',
 	    	// 'tanggalPengiriman'=> 'required',
 	    	// 'terbayar'=> 'required',

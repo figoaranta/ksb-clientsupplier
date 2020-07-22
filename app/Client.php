@@ -17,6 +17,7 @@ class Client extends Model
     	'order',
         'hargaTotal',
         'barangTotal',
+        'keteranganBon',
     	'lunas',
     ];
 }

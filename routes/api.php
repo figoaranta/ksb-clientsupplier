@@ -26,12 +26,17 @@ Route::prefix('v1')->group(function(){
 	Route::get('clientCart/{name}','Api\v1\ClientCartController@viewCart');
 	Route::post('clientCart/{wheelId}/{name}','Api\v1\ClientCartController@addToCart');
 	Route::delete('clientCart/{wheelId}/{name}','Api\v1\ClientCartController@deleteCartItem');
-	Route::delete('clientCart/{wheelId}/{name}','Api\v1\ClientCartController@deleteCartItemAll');
+	Route::delete('clientCartAll/{wheelId}/{name}','Api\v1\ClientCartController@deleteCartItemAll');
+
+	Route::get('clientPinjamCart/{name}','Api\v1\ClientPinjamanCartController@viewCart');
+	Route::post('clientPinjamCart/{wheelId}/{name}','Api\v1\ClientPinjamanCartController@addToCart');
+	Route::delete('clientPinjamCart/{wheelId}/{name}','Api\v1\ClientPinjamanCartController@deleteCartItem');
+	Route::delete('clientPinjamCartAll/{wheelId}/{name}','Api\v1\ClientPinjamanCartController@deleteCartItemAll');
 
 	Route::get('supplierCart/{name}','Api\v1\SupplierCartController@viewCart');
 	Route::post('supplierCart/{wheelId}/{name}','Api\v1\SupplierCartController@addToCart');
 	Route::delete('supplierCart/{wheelId}/{name}','Api\v1\SupplierCartController@deleteCartItem');
-	Route::delete('supplierCart/{wheelId}/{name}','Api\v1\SupplierCartController@deleteCartItemAll');
+	Route::delete('supplierCartAll/{wheelId}/{name}','Api\v1\SupplierCartController@deleteCartItemAll');
 
 	Route::get('supplierPinjamCart/{name}','Api\v1\SupplierPinjamanCartController@viewCart');
 	Route::post('supplierPinjamCart/{wheelId}/{name}','Api\v1\SupplierPinjamanCartController@addToCart');

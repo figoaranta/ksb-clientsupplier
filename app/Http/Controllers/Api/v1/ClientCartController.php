@@ -16,27 +16,37 @@ class ClientCartController extends Controller
         $request->validate([
             'quantity' => 'required',
             'price' => 'required',
-            'keteranganGudang' => 'required'
+            'keterangan' => 'required'
         ]);
 
-        if($request->keteranganGudang == 'Gudang'){
-            $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+        $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
 
-            if($request->quantity > $stock[0]->quantity){
-                return response()->json(["Insufficient Stock"]);
-            }
-            else{
-                $stock[0]->update([
-                    "quantity" => $stock[0]->quantity - $request->quantity
-                ]);
-            } 
+        if($request->quantity > $stock[0]->quantity){
+            return response()->json(["Insufficient Stock"]);
         }
+        else{
+            $stock[0]->update([
+                "quantity" => $stock[0]->quantity - $request->quantity
+            ]);
+        } 
+        // if($request->keteranganGudang == 'Gudang'){
+        //     $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+
+        //     if($request->quantity > $stock[0]->quantity){
+        //         return response()->json(["Insufficient Stock"]);
+        //     }
+        //     else{
+        //         $stock[0]->update([
+        //             "quantity" => $stock[0]->quantity - $request->quantity
+        //         ]);
+        //     } 
+        // }
         
 
         $productArray = ([
             "id"=>$wheel[0]->id,
             "uniqueCode"=>$wheel[0]->uniqueCode, 
-            "keteranganGudang"=>$request->keteranganGudang,
+            "keterangan"=>$request->keterangan,
             "price"=>$request->price,
             "quantity"=>$request->quantity
         ]);
@@ -108,13 +118,18 @@ class ClientCartController extends Controller
         $cart = DB::table('carts')->where('id', $clientsupplier[0]->id)->first();
         $output = DB::table('carts')->where('id', $clientsupplier[0]->id);
 
-        if(json_decode($cart->items,true)[$wheelId]['keteranganGudang'] != "Pinjam"){
-            $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+        $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
 
-            $stock[0]->update([
-                'quantity' => $stock[0]->quantity + 1
-            ]);
-        }
+        $stock[0]->update([
+            'quantity' => $stock[0]->quantity + 1
+        ]);
+        // if(json_decode($cart->items,true)[$wheelId]['keteranganGudang'] != "Pinjam"){
+        //     $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+
+        //     $stock[0]->update([
+        //         'quantity' => $stock[0]->quantity + 1
+        //     ]);
+        // }
         
         if ($cart) {
             $oldCart = $cart;
@@ -180,13 +195,18 @@ class ClientCartController extends Controller
             $oldCart = null;
         }
 
-        if($oldCart->items[$wheelId]['keteranganGudang'] != "Pinjam"){
-            $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+        $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
 
-            $stock[0]->update([
-                'quantity' => $stock[0]->quantity + $oldCart->items[$wheelId]['quantity']
-            ]);
-        }
+        $stock[0]->update([
+            'quantity' => $stock[0]->quantity + $oldCart->items[$wheelId]['quantity']
+        ]);
+        // if($oldCart->items[$wheelId]['keteranganGudang'] != "Pinjam"){
+        //     $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+
+        //     $stock[0]->update([
+        //         'quantity' => $stock[0]->quantity + $oldCart->items[$wheelId]['quantity']
+        //     ]);
+        // }
         
         $oldCart->totalPrice = $oldCart->totalPrice - $oldCart->items[$wheelId]['price'];
         $oldCart->totalQuantity = $oldCart->totalQuantity - $oldCart->items[$wheelId]['quantity'];

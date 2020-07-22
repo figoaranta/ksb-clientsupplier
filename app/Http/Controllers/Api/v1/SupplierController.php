@@ -15,7 +15,26 @@ class SupplierController extends Controller
     }
     public function show(Supplier $supplier)
     {
+        // $productArray = ([
+        //     "id"=>$wheel[0]->id,
+        //     "uniqueCode"=>$wheel[0]->uniqueCode, 
+        //     "keteranganGudang"=>null,
+        //     "price"=>$request->price,
+        //     "quantity"=>$request->quantity
+        // ]);
+        $newArray = [];
         $supplier->order = json_decode($supplier->order,true);
+        foreach ($supplier->order as $key => $value) {
+            $array = ([
+                "wheelId"=>$key,
+                "uniqueCode"=>$value['uniqueCode'],
+                "quantity"=>$value['quantity'],
+                "price"=>$value['price']
+            ]);
+            $newObject = (object) $array;
+            array_push($newArray, $newObject);
+        }
+        $supplier->order = $newArray;
     	return $supplier;
     }
     public function store(Request $request)
