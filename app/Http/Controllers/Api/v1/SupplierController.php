@@ -89,6 +89,17 @@ class SupplierController extends Controller
     }
     public function update(Request $request, Supplier $supplier)
     {
+        if($request->lunas){
+            if ($request->lunas == true) {
+                $hutang = DB::connection('mysql3')->table('hutangs')->where('penjual',$supplier->penjual)->get();
+                if($hutang){
+                    DB::connection('mysql3')->table('hutangs')->where('penjual',$supplier->penjual)->update([
+                        "total" => $hutang[0]->total - $supplier->hargaTotal
+                    ]);
+                }
+                
+            }
+        }
     	$supplier->update($request->all());
     	return $supplier;
     }

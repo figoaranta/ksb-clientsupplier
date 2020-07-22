@@ -47,7 +47,7 @@ class ClientController extends Controller
                 'total' => $hutang[0]->total + $cart->totalPrice
             ]);
         }
-        else{
+        else if ($cart->totalPrice!=0){
             $hutang = DB::connection('mysql3')->table('piutangs')->insert([
                 'pembeli' => $request->pembeli,
                 "alamat" => $request->alamatPenerima,
@@ -71,6 +71,17 @@ class ClientController extends Controller
     }
     public function update(Request $request, Client $client)
     {
+        if($request->lunas){
+            if ($request->lunas == true) {
+                $hutang = DB::connection('mysql3')->table('piutangs')->where('pembeli',$client->pembeli)->get();
+                if($hutang){
+                    DB::connection('mysql3')->table('piutangs')->where('pembeli',$client->pembeli)->update([
+                        "total" => $hutang[0]->total - $client->hargaTotal
+                    ]);
+                }
+                
+            }
+        }
     	$client->update($request->all());
     	return $client;
     }
