@@ -40,7 +40,6 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
     	$request->validate([
-    		'nomorBon' => 'required',
 	    	'penjual' => 'required',
 	    	'pembeli'=> 'required',
 	    	'alamatPenerima'=> 'required',
@@ -51,7 +50,35 @@ class SupplierController extends Controller
 	    	// 'order'=> 'required',
 	    	// 'lunas'=> 'required',
     	]);
-
+        $date = (getdate());
+        if(Supplier::all()->count() != 0){
+            $number = '';
+            $lastNomorBon = Supplier::all()->last()->nomorBon;
+            if(strlen($date['mon'])==1){
+                $date['mon'] = "0".$date['mon'];
+            }
+            if(strlen($date['mday'])==1){
+                $date['mday'] = "0".$date['mday'];
+            }
+            if($lastNomorBon[8].$lastNomorBon[9] != $date['mday']){
+                $newNomorBon = 1;
+            }
+            else{
+                for ($i=strlen($lastNomorBon)-1; $i > 0 ; $i--) { 
+                    if($lastNomorBon[$i] == " "){
+                        break;
+                    }
+                $number = $number.$lastNomorBon[$i];
+                }
+                $newNomorBon = strrev($number)+1;
+            }
+            
+            
+            $newBon = $date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.$newNomorBon;
+        }
+        else{
+            $newBon = $date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.'1';
+        }
         $clientsupplier = DB::connection('mysql2')->table('clients_suppliers')->where('name',$request->penjual)->get();
 
         $output = DB::table('carts')->where('id', $clientsupplier[0]->id);
@@ -74,7 +101,7 @@ class SupplierController extends Controller
         }
 
         $supplier = Supplier::create([
-            'nomorBon' => $request->nomorBon,
+            'nomorBon' => $newBon,
             'penjual' => $request->penjual,
             'pembeli' => $request->pembeli,
             'alamatPenerima' => $request->alamatPenerima,

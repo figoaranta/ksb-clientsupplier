@@ -35,4 +35,8 @@ class StockController extends Controller
     	$stock->delete();
     	return response()->json(["Data has been deleted."]);
     }
+    public function getStockByWheelUniqueCode(Request $request)
+    {
+        return Stock::where("uniqueCode",$request->uniqueCode)->get()[0];
+    }
 }

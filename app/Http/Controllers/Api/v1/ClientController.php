@@ -23,16 +23,44 @@ class ClientController extends Controller
     public function store(Request $request)
     {
     	$request->validate([
-    		'nomorBon' => 'required',
 	    	'pembeli' => 'required',
 	    	'penerima'=> 'required',
 	    	'alamatPenerima'=> 'required',
             'keteranganBon' => 'required',
-	    	// 'tanggalBayar'=> 'required',
-	    	// 'tanggalPengiriman'=> 'required',
+	    	'tanggalBayar'=> 'required',
+	    	'tanggalPengiriman'=> 'required',
 	    	// 'terbayar'=> 'required',
 	    	// 'lunas'=> 'required',
     	]);
+        $date = (getdate());
+        if(Client::all()->count() != 0){
+            $number = '';
+            $lastNomorBon = Client::all()->last()->nomorBon;
+            if(strlen($date['mon'])==1){
+                $date['mon'] = "0".$date['mon'];
+            }
+            if(strlen($date['mday'])==1){
+                $date['mday'] = "0".$date['mday'];
+            }
+            if($lastNomorBon[8].$lastNomorBon[9] != $date['mday']){
+                $newNomorBon = 1;
+            }
+            else{
+                for ($i=strlen($lastNomorBon)-1; $i > 0 ; $i--) { 
+                    if($lastNomorBon[$i] == " "){
+                        break;
+                    }
+                $number = $number.$lastNomorBon[$i];
+                }
+                $newNomorBon = strrev($number)+1;
+            }
+            
+            
+            $newBon = $date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.$newNomorBon;
+        }
+        else{
+            $newBon = $date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.'1';
+        }
 
         $clientsupplier = DB::connection('mysql2')->table('clients_suppliers')->where('name',$request->pembeli)->get();
 
@@ -56,10 +84,12 @@ class ClientController extends Controller
         }
 
     	$client = Client::create([
-            'nomorBon' => $request->nomorBon,
+            'nomorBon' => $newBon,
             'pembeli' => $request->pembeli,
             'penerima' => $request->penerima,
             'alamatPenerima' => $request->alamatPenerima,
+            'tanggalBayar'=>$request->tanggalBayar,
+            'tanggalPengiriman'=>$request->tanggalPengiriman,
             'order' => $cart->items,
             'barangTotal'=> $cart->totalQuantity,
             'hargaTotal' => $cart->totalPrice,
@@ -107,5 +137,9 @@ class ClientController extends Controller
 
     	$client->delete();
     	return response()->json(["Data has been deleted."]);
+    }
+    public function showSuratjalan($date)
+    {
+        return Client::where('tanggalPengiriman',$date)->get();
     }
 }
