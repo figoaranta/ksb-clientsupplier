@@ -21,7 +21,7 @@ class SupplierPinjamanCartController extends Controller
 
         $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
 
-        if($stock){
+        if(count($stock)!=0){
             $stock[0]->update([
                 'quantity' => $stock[0]->quantity + $request->quantity
             ]);
