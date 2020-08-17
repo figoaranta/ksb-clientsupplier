@@ -26,6 +26,7 @@ Route::prefix('v1')->group(function(){
 	Route::get('suratJalan/{date}','Api\v1\ClientController@showSuratJalan');
 
 	Route::get('clientCart/{name}','Api\v1\ClientCartController@viewCart');
+	Route::put('clientCart/{wheelId}/{name}','Api\v1\ClientCartController@editCart');
 	Route::post('clientCart/{wheelId}/{name}','Api\v1\ClientCartController@addToCart');
 	Route::delete('clientCart/{wheelId}/{name}','Api\v1\ClientCartController@deleteCartItem');
 	Route::delete('clientCartAll/{wheelId}/{name}','Api\v1\ClientCartController@deleteCartItemAll');

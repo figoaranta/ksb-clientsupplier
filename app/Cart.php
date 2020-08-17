@@ -37,6 +37,16 @@ class Cart
         // $this->totalPrice += $item->price;
         $this->items[$id] = $storedItem;
     }
+    public function edit($item,$id)
+    {
+        $storedItem = ['quantity'=>0 , 'price' => $item->price , 'uniqueCode' => $item->uniqueCode, 'keterangan'=>$item->keterangan];
+        
+         if ($this->items) {
+            if (array_key_exists($id, $this->items)) {
+                $storedItem = $this->items[$id];
+            }
+        }
 
+    }
 
 }
