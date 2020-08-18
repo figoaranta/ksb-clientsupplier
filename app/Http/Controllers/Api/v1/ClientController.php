@@ -42,7 +42,6 @@ class ClientController extends Controller
             if(strlen($date['mday'])==1){
                 $date['mday'] = "0".$date['mday'];
             }
-            return $lastNomorBon;
             if($lastNomorBon[8].$lastNomorBon[9] != $date['mday']){
                 $newNomorBon = 1;
             }
