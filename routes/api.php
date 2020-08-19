@@ -33,16 +33,19 @@ Route::prefix('v1')->group(function(){
 
 	// Route::get('clientPinjamCart/{name}','Api\v1\ClientPinjamanCartController@viewCart');
 	Route::post('clientPinjamCart/{wheelId}/{name}','Api\v1\ClientPinjamanCartController@addToCart');
+	Route::put('clientPinjamCart/{wheelId}/{name}','Api\v1\ClientPinjamanCartController@editCart');
 	// Route::delete('clientPinjamCart/{wheelId}/{name}','Api\v1\ClientPinjamanCartController@deleteCartItem');
 	// Route::delete('clientPinjamCartAll/{wheelId}/{name}','Api\v1\ClientPinjamanCartController@deleteCartItemAll');
 
 	Route::get('supplierCart/{name}','Api\v1\SupplierCartController@viewCart');
 	Route::post('supplierCart/{wheelId}/{name}','Api\v1\SupplierCartController@addToCart');
+	Route::put('supplierCart/{wheelId}/{name}','Api\v1\SupplierCartController@editCart');
 	Route::delete('supplierCart/{wheelId}/{name}','Api\v1\SupplierCartController@deleteCartItem');
 	Route::delete('supplierCartAll/{wheelId}/{name}','Api\v1\SupplierCartController@deleteCartItemAll');
 
 	// Route::get('supplierPinjamCart/{name}','Api\v1\SupplierPinjamanCartController@viewCart');
 	Route::post('supplierPinjamCart/{wheelId}/{name}','Api\v1\SupplierPinjamanCartController@addToCart');
+	Route::put('supplierPinjamCart/{wheelId}/{name}','Api\v1\SupplierPinjamanCartController@editCart');
 	// Route::delete('supplierPinjamCart/{wheelId}/{name}','Api\v1\SupplierPinjamanCartController@deleteCartItem');
 	// Route::delete('supplierPinjamCartAll/{wheelId}/{name}','Api\v1\SupplierPinjamanCartController@deleteCartItemAll');
 });

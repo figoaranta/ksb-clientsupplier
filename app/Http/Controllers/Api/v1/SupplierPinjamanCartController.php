@@ -81,7 +81,87 @@ class SupplierPinjamanCartController extends Controller
         return response()->json([$newCart]);
 
     }
+    public function editCart(Request $request ,$wheelId,$name)
+    {
+        $wheel = DB::connection('mysql2')->table('wheels')->where('id',$wheelId)->get();
+        $clientsupplier = DB::connection('mysql2')->table('clients_suppliers')->where('name',$name)->get();  
 
+        $decode = json_decode($cart = DB::table('carts')->where('id', $clientsupplier[0]->id)->first()->items,true)[$wheelId];
+
+        if($request->quantity == null){
+            $request->quantity = $decode['quantity'];
+        }
+        if($request->price == null){
+            $request->price = $decode['price'];
+        }
+        if($request->keterangan == null){
+            $request->keterangan = $decode['keterangan'];
+        }    
+
+        $this->deleteCartItemAll($wheelId,$name);
+
+        $stock = Stock::where('uniqueCode',$wheel[0]->uniqueCode)->get();
+
+        if(count($stock)!=0){
+            $stock[0]->update([
+                'quantity' => $stock[0]->quantity + $request->quantity
+            ]);
+        }
+        else{
+            Stock::create([
+                'uniqueCode'=> $wheel[0]->uniqueCode,
+                'quantity' => $request->quantity
+            ]);
+        }
+
+        $productArray = ([
+            "id"=>$wheel[0]->id,
+            "uniqueCode"=>$wheel[0]->uniqueCode, 
+            "keterangan"=>$request->keterangan,
+            "price"=>null,
+            "quantity"=>$request->quantity
+        ]);
+        
+        $arrayObject = (object) $productArray;
+
+        $cart = DB::table('carts')->where('id', $clientsupplier[0]->id)->first();
+
+        if ($cart) {
+            $oldCart = $cart;
+            $oldCart->items = json_decode($oldCart->items,true);
+        }
+        else{
+            $oldCart = null;
+        }
+
+        $newCart = new Cart($oldCart);
+
+        $newCart->add($arrayObject, $wheel[0]->id);
+
+        $output = DB::table('carts')->where('id', $clientsupplier[0]->id);
+        if ($cart == null) {
+            $output->insert([
+            'id' => $clientsupplier[0]->id,
+            'name' => $clientsupplier[0]->name,
+            'items' => json_encode($newCart->items),
+            'totalPrice' => $newCart->totalPrice,
+            'totalQuantity' => $newCart->totalQuantity
+            ]);
+        }
+        else{
+            $output->update([
+            'id' => $clientsupplier[0]->id,
+            'name' => $clientsupplier[0]->name,
+            'items' => json_encode($newCart->items),
+            'totalPrice' => $newCart->totalPrice,
+            'totalQuantity' => $newCart->totalQuantity
+            ]);
+        }   
+        
+
+        return response()->json([$newCart]);
+
+    }
     public function viewCart($name)
     {
         $clientsupplier = DB::connection('mysql2')->table('clients_suppliers')->where('name',$name)->get();
@@ -162,7 +242,7 @@ class SupplierPinjamanCartController extends Controller
         // $request->session()->put('cart',$oldCart);
         return response()->json(['Data has been deleted.']);
     }
-    public function deleteCartItemAll(Request $request, $wheelId,$name)
+    public function deleteCartItemAll($wheelId,$name)
     {
         $wheel = DB::connection('mysql2')->table('wheels')->where('id',$wheelId)->get();
         $clientsupplier = DB::connection('mysql2')->table('clients_suppliers')->where('name',$name)->get();
