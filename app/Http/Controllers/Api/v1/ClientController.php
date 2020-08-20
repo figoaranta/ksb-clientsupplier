@@ -59,6 +59,12 @@ class ClientController extends Controller
             $newBon = $date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.$newNomorBon;
         }
         else{
+            if (strlen($date['mon'])==1){
+                $date['mon'] = 0 . $date['mon'];
+            }
+            if (strlen($date['mday'])==1){
+                $date['mday'] = 0 . $date['mday'];
+            }
             $newBon = $date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.'1';
         }
 
