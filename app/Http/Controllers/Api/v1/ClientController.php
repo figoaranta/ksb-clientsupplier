@@ -29,6 +29,7 @@ class ClientController extends Controller
             'keteranganBon' => 'required',
 	    	'tanggalBayar'=> 'required',
 	    	'tanggalPengiriman'=> 'required',
+            'keteranganGudang'=>'required',
 	    	// 'terbayar'=> 'required',
 	    	// 'lunas'=> 'required',
     	]);
@@ -96,6 +97,7 @@ class ClientController extends Controller
             'alamatPenerima' => $request->alamatPenerima,
             'tanggalBayar'=>$request->tanggalBayar,
             'tanggalPengiriman'=>$request->tanggalPengiriman,
+            'keteranganGudang'=>$request->keteranganGudang,
             'order' => $cart->items,
             'barangTotal'=> $cart->totalQuantity,
             'hargaTotal' => $cart->totalPrice,

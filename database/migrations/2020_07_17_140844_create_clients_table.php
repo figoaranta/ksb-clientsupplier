@@ -22,6 +22,7 @@ class CreateClientsTable extends Migration
             $table->string('tanggalBayar')->nullable();
             $table->string('tanggalPengiriman')->nullable();
             $table->string('terbayar')->nullable();
+            $table->string('keteranganGudang');
             $table->string('order');
             $table->integer('hargaTotal');
             $table->integer('barangTotal');

@@ -14,6 +14,7 @@ class Supplier extends Model
     	'tanggalBayar',
     	'tanggalPengiriman',
     	'terbayar',
+        'keteranganGudang',
     	'order',
         'hargaTotal',
         'barangTotal',
