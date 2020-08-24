@@ -17,7 +17,20 @@ class ClientController extends Controller
     }
     public function show(Client $client)
     {
+        $newArray=[];
         $client->order = json_decode($client->order,true);
+        foreach ($client->order as $key => $value) {
+            $array = ([
+                "wheelId"=>$key,
+                "uniqueCode"=>$value['uniqueCode'],
+                "quantity"=>$value['quantity'],
+                "price"=>$value['price'],
+                "keterangan"=>$value['keterangan']
+            ]);
+            $newObject = (object) $array;
+            array_push($newArray, $newObject);
+        }
+        $client->order = $newArray;
     	return $client;
     }
     public function store(Request $request)

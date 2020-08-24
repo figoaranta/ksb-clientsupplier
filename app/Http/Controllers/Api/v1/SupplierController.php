@@ -29,7 +29,8 @@ class SupplierController extends Controller
                 "wheelId"=>$key,
                 "uniqueCode"=>$value['uniqueCode'],
                 "quantity"=>$value['quantity'],
-                "price"=>$value['price']
+                "price"=>$value['price'],
+                "keterangan"=>$value['keterangan']
             ]);
             $newObject = (object) $array;
             array_push($newArray, $newObject);
