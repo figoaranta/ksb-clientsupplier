@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::prefix('v1')->group(function(){
+Route::prefix('backend2/v1')->group(function(){
 	Route::apiResource('stocks','Api\v1\StockController');
 	Route::apiResource('clients','Api\v1\ClientController');
 	Route::apiResource('suppliers','Api\v1\SupplierController');
