@@ -24,6 +24,7 @@ Route::prefix('backend2/v1')->group(function(){
 	Route::apiResource('suppliers','Api\v1\SupplierController');
 	Route::get('stocksByUniqueCode','Api\v1\StockController@getStockByWheelUniqueCode');
 	Route::get('suratJalan/{date}','Api\v1\ClientController@showSuratJalan');
+	Route::get('supplier/{supplierName}','Api\v1\SupplierController@showFromClientName');
 
 	Route::get('clientCart/{name}','Api\v1\ClientCartController@viewCart');
 	Route::put('clientCart/{wheelId}/{name}','Api\v1\ClientCartController@editCart');

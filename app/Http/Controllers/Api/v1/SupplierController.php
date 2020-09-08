@@ -163,4 +163,8 @@ class SupplierController extends Controller
     	$supplier->delete();
     	return response()->json(["Data has been deleted."]);
     }
+        public function showFromClientName($supplier)
+    {
+        return Supplier::where('penjual',$supplier)->where('lunas',0)->get();
+    }
 }

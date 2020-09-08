@@ -13,7 +13,29 @@ class ClientController extends Controller
     {
     	// $test = DB::connection('mysql2')->table('stocks')->get();
     	// return $test;
-    	return Client::all();
+
+        return Client::all();
+        /* Change client's order -> array of objects */
+        $newArray=[];
+    	$clients = Client::all();
+        
+        foreach ($clients as $client) {
+            $client->order = json_decode($client->order,true);
+            foreach ($client->order as $key => $value) {
+                $array = ([
+                    "wheelId"=>$key,
+                    "uniqueCode"=>$value['uniqueCode'],
+                    "quantity"=>$value['quantity'],
+                    "price"=>$value['price'],
+                    "keterangan"=>$value['keterangan']
+                ]);
+                $newObject = (object) $array;
+                array_push($newArray, $newObject);
+            }
+            $client->order = $newArray;
+            reset($newArray);
+        }
+        return $clients;
     }
     public function show(Client $client)
     {
@@ -163,4 +185,5 @@ class ClientController extends Controller
     {
         return Client::where('tanggalPengiriman',$date)->get();
     }
+
 }
