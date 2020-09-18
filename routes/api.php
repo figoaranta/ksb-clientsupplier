@@ -51,5 +51,6 @@ Route::prefix('backend2/v1')->group(function(){
 	// Route::delete('supplierPinjamCartAll/{wheelId}/{name}','Api\v1\SupplierPinjamanCartController@deleteCartItemAll');
 	Route::apiResource('logStok','Api\v1\LogStokController');
 	Route::get('logStokWheelId/{id}','Api\v1\LogStokController@showBasedOnWheelId');
+	Route::get('logStokUniqueCode','Api\v1\LogStokController@showBasedOnUniqueCode');
 });
 

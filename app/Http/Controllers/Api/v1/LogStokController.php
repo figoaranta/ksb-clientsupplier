@@ -43,5 +43,12 @@ class LogStokController extends Controller
     {
     	return LogStok::where('wheelId',$wheelId)->get();
     }
+    public function showBasedOnUniqueCode(Request $request)
+    {
+        $request->validate([
+            'uniqueCode' => 'required'
+        ]);
+        return LogStok::where('uniqueCode',$request->uniqueCode)->get();
+    }
 
 }
