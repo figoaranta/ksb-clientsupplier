@@ -49,5 +49,7 @@ Route::prefix('backend2/v1')->group(function(){
 	Route::put('supplierPinjamCart/{wheelId}/{name}','Api\v1\SupplierPinjamanCartController@editCart');
 	// Route::delete('supplierPinjamCart/{wheelId}/{name}','Api\v1\SupplierPinjamanCartController@deleteCartItem');
 	// Route::delete('supplierPinjamCartAll/{wheelId}/{name}','Api\v1\SupplierPinjamanCartController@deleteCartItemAll');
+	Route::apiResource('logStok','Api\v1\LogStokController');
+	Route::get('logStokWheelId/{id}','Api\v1\LogStokController@showBasedOnWheelId');
 });
 

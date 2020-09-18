@@ -6,6 +6,7 @@ use App\Supplier;
 use App\Stock;
 use Illuminate\Http\Request;
 use DB;
+use App\LogStok;
 
 class SupplierController extends Controller
 {
@@ -40,6 +41,7 @@ class SupplierController extends Controller
     }
     public function store(Request $request)
     {
+        $today = "";
     	$request->validate([
 	    	'penjual' => 'required',
 	    	'pembeli'=> 'required',
@@ -77,10 +79,19 @@ class SupplierController extends Controller
             
             
             $newBon = $date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.$newNomorBon;
+            $today = $date['year'].'-'.$date['mon'].'-'.$date['mday'];
         }
         else{
+            if (strlen($date['mon'])==1){
+                $date['mon'] = 0 . $date['mon'];
+            }
+            if (strlen($date['mday'])==1){
+                $date['mday'] = 0 . $date['mday'];
+            }
             $newBon = $date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.'1';
+            $today = $date['year'].'-'.$date['mon'].'-'.$date['mday'];
         }
+
         $clientsupplier = DB::connection('mysql2')->table('clients_suppliers')->where('name',$request->penjual)->get();
 
         $output = DB::table('carts')->where('id', $clientsupplier[0]->id);
@@ -102,6 +113,18 @@ class SupplierController extends Controller
             ]);
         }
 
+        foreach (json_decode($cart->items,true) as $key => $value) {
+             $LogStok = LogStok::create([
+                'wheelId'=>$key,
+                'uniqueCode'=>$value['uniqueCode'],
+                'name'=>$request->pembeli,
+                'quantity'=>$value['quantity'],
+                'price'=>$value['price'],
+                'date'=>$today,
+                'keterangan'=>"In",
+             ]);
+         };
+         
         $supplier = Supplier::create([
             'nomorBon' => $newBon,
             'penjual' => $request->penjual,

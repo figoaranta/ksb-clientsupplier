@@ -6,6 +6,7 @@ use App\Client;
 use App\Stock;
 use Illuminate\Http\Request;
 use DB;
+use App\LogStok;
 
 class ClientController extends Controller
 {
@@ -57,6 +58,7 @@ class ClientController extends Controller
     }
     public function store(Request $request)
     {
+        $today = "";
     	$request->validate([
 	    	'pembeli' => 'required',
 	    	'penerima'=> 'required',
@@ -93,6 +95,7 @@ class ClientController extends Controller
             
             
             $newBon = $date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.$newNomorBon;
+            $today = $date['year'].'-'.$date['mon'].'-'.$date['mday'];
         }
         else{
             if (strlen($date['mon'])==1){
@@ -102,6 +105,7 @@ class ClientController extends Controller
                 $date['mday'] = 0 . $date['mday'];
             }
             $newBon = $date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.'1';
+            $today = $date['year'].'-'.$date['mon'].'-'.$date['mday'];
         }
 
         $clientsupplier = DB::connection('mysql2')->table('clients_suppliers')->where('name',$request->pembeli)->get();
@@ -125,6 +129,17 @@ class ClientController extends Controller
             ]);
         }
 
+        foreach (json_decode($cart->items,true) as $key => $value) {
+             $LogStok = LogStok::create([
+                'wheelId'=>$key,
+                'uniqueCode'=>$value['uniqueCode'],
+                'name'=>$request->pembeli,
+                'quantity'=>$value['quantity'],
+                'price'=>$value['price'],
+                'date'=>$today,
+                'keterangan'=>"Out",
+             ]);
+         };
     	$client = Client::create([
             'nomorBon' => $newBon,
             'pembeli' => $request->pembeli,
