@@ -117,7 +117,7 @@ class SupplierController extends Controller
              $LogStok = LogStok::create([
                 'wheelId'=>$key,
                 'uniqueCode'=>$value['uniqueCode'],
-                'name'=>$request->pembeli,
+                'name'=>$request->penjual,
                 'quantity'=>$value['quantity'],
                 'price'=>$value['price'],
                 'date'=>$today,
