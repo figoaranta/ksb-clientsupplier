@@ -80,7 +80,7 @@ class ClientController extends Controller
             if(strlen($date['mday'])==1){
                 $date['mday'] = "0".$date['mday'];
             }
-            if($lastNomorBon[8].$lastNomorBon[9] != $date['mday']){
+            if($lastNomorBon[10].$lastNomorBon[11] != $date['mday']){
                 $newNomorBon = 1;
             }
             else{
@@ -94,7 +94,7 @@ class ClientController extends Controller
             }
             
             
-            $newBon = $date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.$newNomorBon;
+            $newBon = 'C-'.$date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.$newNomorBon;
             $today = $date['year'].'-'.$date['mon'].'-'.$date['mday'];
         }
         else{
@@ -104,7 +104,7 @@ class ClientController extends Controller
             if (strlen($date['mday'])==1){
                 $date['mday'] = 0 . $date['mday'];
             }
-            $newBon = $date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.'1';
+            $newBon = 'C-'.$date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.'1';
             $today = $date['year'].'-'.$date['mon'].'-'.$date['mday'];
         }
 

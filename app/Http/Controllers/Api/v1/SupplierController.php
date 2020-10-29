@@ -64,7 +64,7 @@ class SupplierController extends Controller
             if(strlen($date['mday'])==1){
                 $date['mday'] = "0".$date['mday'];
             }
-            if($lastNomorBon[8].$lastNomorBon[9] != $date['mday']){
+            if($lastNomorBon[10].$lastNomorBon[11] != $date['mday']){
                 $newNomorBon = 1;
             }
             else{
@@ -77,8 +77,7 @@ class SupplierController extends Controller
                 $newNomorBon = strrev($number)+1;
             }
             
-            
-            $newBon = $date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.$newNomorBon;
+            $newBon = 'S-'.$date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.$newNomorBon;
             $today = $date['year'].'-'.$date['mon'].'-'.$date['mday'];
         }
         else{
@@ -88,7 +87,8 @@ class SupplierController extends Controller
             if (strlen($date['mday'])==1){
                 $date['mday'] = 0 . $date['mday'];
             }
-            $newBon = $date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.'1';
+            return "dsa";
+            $newBon = 'S-'.$date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.'1';
             $today = $date['year'].'-'.$date['mon'].'-'.$date['mday'];
         }
 
