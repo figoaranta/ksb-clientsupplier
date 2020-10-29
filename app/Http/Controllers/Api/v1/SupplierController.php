@@ -87,7 +87,7 @@ class SupplierController extends Controller
             if (strlen($date['mday'])==1){
                 $date['mday'] = 0 . $date['mday'];
             }
-            return "dsa";
+            
             $newBon = 'S-'.$date['year'].'-'.$date['mon'].'-'.$date['mday'].' '.'1';
             $today = $date['year'].'-'.$date['mon'].'-'.$date['mday'];
         }
